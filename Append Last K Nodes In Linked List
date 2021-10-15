@@ -1,0 +1,170 @@
+#include<iostream>
+using namespace std;
+class Node
+{
+    public:
+
+    int Data;
+    Node* Next;
+
+    Node(int value)
+    {
+       Data=value;
+       Next=NULL;
+    }
+};
+void InsertAtTail(Node* &head,int val)  ///here we take by reference and not by value bcse here we have to modify linked list.
+{
+   Node* n = new Node(val);
+
+   if(head==NULL) ///if linked list is empty we don't need to traverse 
+   {
+       head=n;
+       return;
+   }
+   Node* temp =head;
+   while(temp->Next!=NULL)
+   {
+       temp=temp->Next;
+   }
+
+   temp->Next=n;
+
+}
+
+void InsertAtHead(Node* &head, int val)
+{
+    Node* n =new Node(val);
+    n->Next=head;
+    head=n;
+}
+
+void display(Node* head)
+{
+    Node* temp=head;
+    while(temp!=NULL)
+    {
+        cout<<temp->Data<<"->";
+        temp=temp->Next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+
+bool search(Node* head,int key)
+{
+    Node *temp =head;
+    while(temp!=NULL)
+    {
+        if(temp->Data==key)
+        {
+            return true;
+        }
+        temp=temp->Next;
+    }
+    return false;
+
+
+}
+
+void DeleteAtHead(Node* &head)   ///To delete first node
+{
+    Node* toDelete=head;
+    head=head->Next;
+
+    delete toDelete;
+}
+
+void DeleteNode(Node* &head,int Value)
+{
+    if(head==NULL) ///corner cases
+    {
+        return;
+    }
+    if(head->Next==NULL)    ///when linked list has only one node.
+    {
+        DeleteAtHead(head);
+    }
+  
+    Node* temp=head;
+    while(temp->Next->Data!=Value)   
+    {
+        temp=temp->Next;
+
+    } 
+    Node* todelete =temp->Next; 
+    temp->Next=temp->Next->Next;
+    delete todelete;
+}
+
+int length(Node* head)
+{
+    int l=0;
+    Node* temp=head;
+
+    while(temp!=NULL)
+    {
+        l++;
+        temp=temp->Next;
+    }
+    return l;
+}
+
+Node* AppendKNodes(Node* &head, int k)
+{
+   Node* NewHead;
+   Node* NewTail;
+   Node* Tail=head;
+
+   int l=length(head);
+   k=k%l; 
+   int Count=1;
+
+if(k==1){
+    while(Tail->Next->Next!=NULL){
+         Tail=Tail->Next;
+    }
+    Tail->Next->Next=head;
+    NewHead=Tail->Next;
+    Tail->Next=NULL;
+    return NewHead;
+  }
+   if(k==0){
+    return head;
+  }
+
+   while(Tail->Next!=NULL)
+   {
+       if(Count==l-k)
+       {
+           NewTail=Tail;
+       }
+       if(Count==l-k+1)
+       {
+           NewHead=Tail;
+       }
+       Tail =Tail->Next;
+       Count++;
+   }
+
+   NewTail->Next=NULL;
+   Tail->Next=head;
+
+   return NewHead;
+}
+
+int main()
+{
+   Node* head=NULL;
+   int arr[]={1,2,3,4,5,6};
+   for(int i=0;i<6;i++)
+   {
+       InsertAtTail(head,arr[i]);
+   }
+   display(head);
+   int val;
+   cout<<"Enter the last k nodes you want to append: ";
+   cin>>val;
+   Node* newNode=AppendKNodes(head,val);
+   display(newNode);
+}
